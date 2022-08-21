@@ -24,37 +24,16 @@ import java.util.jar.Manifest
 import android.R.attr.data
 
 
-
-
 class MainActivity : AppCompatActivity() {
 
     private lateinit var contactRecyclerView: RecyclerView
-    private var contactList = ArrayList<ContactData>()
-    private lateinit var contactData: ContactData
+    private var contactList = mutableListOf<ContactData>()
     private lateinit var contactListAdapter: ContactListAdapter
-
-    private lateinit var phoneNumberTvMainActivity: TextView
-    private lateinit var phoneNumberTv: TextView
-    private lateinit var linearlActivity: LinearLayout
-    private lateinit var btnCall: Button
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        linearlActivity = findViewById(R.id.linear_layout_main)
-        phoneNumberTvMainActivity = findViewById(R.id.phoneNumber_textview_main)
-//        btnCall = findViewById(R.id.btn_call)
-//
-////        var intent = intent
-////        var gNum = intent.getStringExtra("phoneNumber")
-//
-////        btnCall.setOnClickListener {
-////            if (gNum != null) {
-////                makePhoneCall(gNum)
-////            }
-////        }
 
         contactRecyclerView = findViewById(R.id.recycler_view_main)
         contactListAdapter = ContactListAdapter(contactList)
@@ -66,18 +45,19 @@ class MainActivity : AppCompatActivity() {
             requestPermissions(arrayOf(READ_CONTACTS), 1)
         } else {
             getContacts()
-
         }
+
+
 
         contactRecyclerView.layoutManager = LinearLayoutManager(this)
         contactRecyclerView.adapter = contactListAdapter
 
-        Toast.makeText(this, "Click the contact you want to call",Toast.LENGTH_LONG).show()
+        Toast.makeText(this, "Click the contact you want to call", Toast.LENGTH_LONG).show()
 
     }
 
     @SuppressLint("Range", "Recycle")
-    fun getContacts() {
+    fun getContacts(): MutableList<ContactData> {
 
         val cr = contentResolver
 
@@ -93,42 +73,12 @@ class MainActivity : AppCompatActivity() {
                     cur.getString(cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
 
                 contactList.add(ContactData(id, name, phoneNumber))
-                contactList.sortWith { lhs, rhs ->
-
-                    if (lhs.id < rhs.id) -1 else if (lhs.name < rhs.name) 1 else 0
-                }
-
 
             }
         }
+
+        return contactList
     }
 
-    private fun makePhoneCall(phoneNumber : String) {
-
-        if (Build.VERSION.SDK_INT >= M
-            && checkSelfPermission(CALL_PHONE) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestPermissions(arrayOf(CALL_PHONE), 1)
-        } else {
-            val num = "tel: $phoneNumber"
-            intent = Intent(Intent.ACTION_DIAL, Uri.parse(num))
-            startActivity(intent)
-
-        }
-    }
-
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//
-//        if (requestCode == 1) {
-//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                getContacts()
-////                makePhoneCall(phoneNumberTv.text.toString())
-//            }
-//        }
-//    }
 }
+

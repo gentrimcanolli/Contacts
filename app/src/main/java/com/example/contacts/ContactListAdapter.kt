@@ -18,7 +18,7 @@ import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 
-class ContactListAdapter(private var contactList: ArrayList<ContactData>) :
+class ContactListAdapter(private var contactList: MutableList<ContactData>) :
     RecyclerView.Adapter<ContactListAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var idTv: TextView
@@ -30,17 +30,11 @@ class ContactListAdapter(private var contactList: ArrayList<ContactData>) :
             nameTv = view.findViewById(R.id.name_textview)
             phoneNumberTv = view.findViewById(R.id.phoneNumber_textview)
         }
-
-
     }
-
-    lateinit var context: Context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View =
             LayoutInflater.from(parent.context).inflate(R.layout.contacts_list_items, parent, false)
-
-        context = parent.context
 
         return ViewHolder(view)
     }
@@ -53,17 +47,11 @@ class ContactListAdapter(private var contactList: ArrayList<ContactData>) :
 
         holder.itemView.setOnClickListener {
             val num = contactList[position]
-//
-           var gNumber: String = num.phoneNumber
-//
-//            val intent = Intent(context, MainActivity::class.java)
-//            intent.putExtra("phoneNumber", gNumber)
-//            context.startActivity(intent)
-//
+
+            val gNumber: String = num.phoneNumber
             val uriString = "tel: $gNumber"
             val intent = Intent(Intent.ACTION_DIAL, Uri.parse(uriString))
-            context.startActivity(intent)
-
+            holder.itemView.context.startActivity(intent)
         }
 
     }
